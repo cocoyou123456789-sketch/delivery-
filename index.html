@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MealCrew - 美国团餐拼单</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="MealCrew 首页">
+        <span class="brand-mark">M</span>
+        <span>MealCrew</span>
+      </a>
+      <nav class="nav-links" aria-label="主导航">
+        <a href="#groups">今日拼单</a>
+        <a href="#restaurants">餐厅</a>
+        <a href="#pickup">取餐点</a>
+        <a href="#orders">我的订单</a>
+      </nav>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="通知">
+          <span aria-hidden="true">!</span>
+        </button>
+        <button class="profile-button" type="button">NYC</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <img src="assets/group-meal-hero.png" alt="朋友们在餐桌上分享外卖拼单" />
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <p class="eyebrow">New York beta</p>
+          <h1>和附近的人一起拼外卖，把配送费和等待时间降下来。</h1>
+          <div class="hero-search" role="search">
+            <label class="field compact">
+              <span>地址</span>
+              <input id="addressInput" type="text" value="Brooklyn, NY 11201" />
+            </label>
+            <label class="field compact">
+              <span>想吃什么</span>
+              <input id="foodInput" type="search" placeholder="米饭套餐、奶茶、炸鸡..." />
+            </label>
+            <button id="searchButton" class="primary-button" type="button">找拼单</button>
+          </div>
+          <div class="hero-stats" aria-label="平台实时数据">
+            <span><strong>42</strong> 个进行中拼单</span>
+            <span><strong>$3.80</strong> 人均配送费</span>
+            <span><strong>28 min</strong> 平均送达</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="workspace" aria-label="拼单工作台">
+        <aside class="sidebar" aria-label="筛选器">
+          <div class="panel">
+            <div class="panel-heading">
+              <h2>筛选</h2>
+              <button id="resetFilters" class="ghost-button" type="button">重置</button>
+            </div>
+            <div class="filter-group" aria-label="餐食类型">
+              <button class="chip active" data-filter="all" type="button">全部</button>
+              <button class="chip" data-filter="asian" type="button">亚洲餐</button>
+              <button class="chip" data-filter="healthy" type="button">轻食</button>
+              <button class="chip" data-filter="late" type="button">夜宵</button>
+            </div>
+            <label class="toggle-row">
+              <input id="nearbyOnly" type="checkbox" checked />
+              <span>只看 1.5 mi 内</span>
+            </label>
+            <label class="toggle-row">
+              <input id="closingSoon" type="checkbox" />
+              <span>即将截单</span>
+            </label>
+          </div>
+
+          <div class="panel" id="cartPanel">
+            <div class="panel-heading">
+              <h2>拼单车</h2>
+              <span id="cartCount" class="count-pill">0</span>
+            </div>
+            <div id="cartItems" class="cart-empty">选择套餐后会出现在这里。</div>
+            <div class="cart-total">
+              <span>预计合计</span>
+              <strong id="cartTotal">$0.00</strong>
+            </div>
+            <button id="checkoutButton" class="primary-button full" type="button" disabled>加入拼单</button>
+          </div>
+        </aside>
+
+        <section class="content-area">
+          <div class="section-heading" id="groups">
+            <div>
+              <p class="eyebrow">Live group orders</p>
+              <h2>附近正在拼</h2>
+            </div>
+            <div class="segmented" aria-label="排序方式">
+              <button class="active" type="button">最快成团</button>
+              <button type="button">离我最近</button>
+              <button type="button">最低配送费</button>
+            </div>
+          </div>
+
+          <div id="groupGrid" class="group-grid"></div>
+
+          <div class="split-layout">
+            <section class="menu-board" id="restaurants">
+              <div class="section-heading compact-heading">
+                <div>
+                  <p class="eyebrow">Featured menus</p>
+                  <h2>热门套餐</h2>
+                </div>
+                <button id="randomPick" class="ghost-button" type="button">帮我选</button>
+              </div>
+              <div id="menuList" class="menu-list"></div>
+            </section>
+
+            <section class="pickup-board" id="pickup">
+              <div class="section-heading compact-heading">
+                <div>
+                  <p class="eyebrow">Pickup map</p>
+                  <h2>取餐点</h2>
+                </div>
+              </div>
+              <div class="map-surface" aria-label="取餐点地图示意">
+                <span class="route-line"></span>
+                <button class="map-pin active" style="left: 62%; top: 38%" type="button" aria-label="Apt Lobby">A</button>
+                <button class="map-pin" style="left: 34%; top: 58%" type="button" aria-label="Library Gate">B</button>
+                <button class="map-pin" style="left: 76%; top: 70%" type="button" aria-label="Campus East">C</button>
+              </div>
+              <div class="pickup-list">
+                <div>
+                  <strong>Apt Lobby</strong>
+                  <span>0.2 mi · 6:40 PM</span>
+                </div>
+                <div>
+                  <strong>Library Gate</strong>
+                  <span>0.7 mi · 7:05 PM</span>
+                </div>
+                <div>
+                  <strong>Campus East</strong>
+                  <span>1.1 mi · 8:15 PM</span>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <section class="orders" id="orders">
+            <div class="section-heading compact-heading">
+              <div>
+                <p class="eyebrow">My orders</p>
+                <h2>订单进度</h2>
+              </div>
+            </div>
+            <div class="order-steps">
+              <div class="step done"><span></span><strong>已参团</strong><small>6:02 PM</small></div>
+              <div class="step done"><span></span><strong>已成团</strong><small>6:12 PM</small></div>
+              <div class="step active"><span></span><strong>商家备餐</strong><small>预计 14 min</small></div>
+              <div class="step"><span></span><strong>配送中</strong><small>待更新</small></div>
+              <div class="step"><span></span><strong>可取餐</strong><small>待更新</small></div>
+            </div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
