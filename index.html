@@ -1,25 +1,27 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MealCrew - 美国团餐拼单</title>
-    <link rel="stylesheet" href="styles.css" />
+    <title>MealCrew - Group Food Delivery</title>
+    <link rel="stylesheet" href="styles.css?v=6" />
   </head>
   <body>
     <header class="topbar">
-      <a class="brand" href="#" aria-label="MealCrew 首页">
+      <a class="brand" href="#" aria-label="MealCrew home">
         <span class="brand-mark">M</span>
         <span>MealCrew</span>
       </a>
-      <nav class="nav-links" aria-label="主导航">
-        <a href="#groups">今日拼单</a>
-        <a href="#restaurants">餐厅</a>
-        <a href="#pickup">取餐点</a>
-        <a href="#orders">我的订单</a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#groups">Live Groups</a>
+        <a href="#market">Market</a>
+        <a href="#launch">Pilot</a>
+        <a href="#restaurants">Restaurants</a>
+        <a href="#pickup">Pickup</a>
+        <a href="#orders">Orders</a>
       </nav>
       <div class="top-actions">
-        <button class="icon-button" type="button" aria-label="通知">
+        <button class="icon-button" type="button" aria-label="Notifications">
           <span aria-hidden="true">!</span>
         </button>
         <button class="profile-button" type="button">NYC</button>
@@ -28,90 +30,172 @@
 
     <main>
       <section class="hero">
-        <img src="assets/group-meal-hero.png" alt="朋友们在餐桌上分享外卖拼单" />
+        <img src="assets/group-meal-hero.png" alt="Friends sharing a group takeout order at a table" />
         <div class="hero-overlay"></div>
         <div class="hero-content">
           <p class="eyebrow">New York beta</p>
-          <h1>和附近的人一起拼外卖，把配送费和等待时间降下来。</h1>
+          <h1>Group food delivery with neighbors, lower fees, and predictable pickup.</h1>
+          <p class="hero-copy">
+            Batch delivery for US campuses, apartment buildings, and offices: fixed order cutoffs, shared pickup hubs, and real nearby restaurants turn many small orders into one dense meal run.
+          </p>
           <div class="hero-search" role="search">
             <label class="field compact">
-              <span>地址</span>
-              <input id="addressInput" type="text" value="Brooklyn, NY 11201" />
+              <span>Address</span>
+              <input id="addressInput" type="text" value="Brooklyn, NY 11201" autocomplete="street-address" />
             </label>
             <label class="field compact">
-              <span>想吃什么</span>
-              <input id="foodInput" type="search" placeholder="米饭套餐、奶茶、炸鸡..." />
+              <span>Craving</span>
+              <input id="foodInput" type="search" placeholder="Rice bowls, boba, fried chicken..." />
             </label>
-            <button id="searchButton" class="primary-button" type="button">找拼单</button>
+            <button id="searchButton" class="primary-button" type="button">Find Groups</button>
           </div>
-          <div class="hero-stats" aria-label="平台实时数据">
-            <span><strong>42</strong> 个进行中拼单</span>
-            <span><strong>$3.80</strong> 人均配送费</span>
-            <span><strong>28 min</strong> 平均送达</span>
+          <div class="hero-stats" aria-label="Live marketplace stats">
+            <span><strong id="liveGroupCount">0</strong> nearby restaurants</span>
+            <span><strong id="avgDeliveryFee">$0.00</strong> avg. delivery share</span>
+            <span><strong id="avgEta">-- min</strong> avg. arrival</span>
+          </div>
+          <div class="hero-value" aria-label="Product value">
+            <span>Transparent checkout</span>
+            <span>Opt-in restaurants</span>
+            <span>Driver-efficient routes</span>
           </div>
         </div>
       </section>
 
-      <section class="workspace" aria-label="拼单工作台">
-        <aside class="sidebar" aria-label="筛选器">
+      <section class="workspace" aria-label="Group order workspace">
+        <aside class="sidebar" aria-label="Filters">
           <div class="panel">
             <div class="panel-heading">
-              <h2>筛选</h2>
-              <button id="resetFilters" class="ghost-button" type="button">重置</button>
+              <h2>Filters</h2>
+              <button id="resetFilters" class="ghost-button" type="button">Reset</button>
             </div>
-            <div class="filter-group" aria-label="餐食类型">
-              <button class="chip active" data-filter="all" type="button">全部</button>
-              <button class="chip" data-filter="asian" type="button">亚洲餐</button>
-              <button class="chip" data-filter="healthy" type="button">轻食</button>
-              <button class="chip" data-filter="late" type="button">夜宵</button>
+            <div class="filter-group" aria-label="Meal type">
+              <button class="chip active" data-filter="all" type="button">All</button>
+              <button class="chip" data-filter="asian" type="button">Asian</button>
+              <button class="chip" data-filter="healthy" type="button">Healthy</button>
+              <button class="chip" data-filter="late" type="button">Late Night</button>
             </div>
             <label class="toggle-row">
               <input id="nearbyOnly" type="checkbox" checked />
-              <span>只看 1.5 mi 内</span>
+              <span>Within 1.5 mi only</span>
             </label>
             <label class="toggle-row">
               <input id="closingSoon" type="checkbox" />
-              <span>即将截单</span>
+              <span>Closing soon</span>
             </label>
           </div>
 
           <div class="panel" id="cartPanel">
             <div class="panel-heading">
-              <h2>拼单车</h2>
+              <h2>Group Cart</h2>
               <span id="cartCount" class="count-pill">0</span>
             </div>
-            <div id="cartItems" class="cart-empty">选择套餐后会出现在这里。</div>
+            <div id="cartItems" class="cart-empty">Your selected meals will appear here.</div>
             <div class="cart-total">
-              <span>预计合计</span>
+              <span>Estimated total</span>
               <strong id="cartTotal">$0.00</strong>
             </div>
-            <button id="checkoutButton" class="primary-button full" type="button" disabled>加入拼单</button>
+            <div class="fee-box" aria-label="Fee breakdown">
+              <div><span>Food subtotal</span><strong id="foodSubtotal">$0.00</strong></div>
+              <div><span>Shared delivery</span><strong id="sharedDeliveryFee">$0.00</strong></div>
+              <div><span>Platform fee</span><strong id="serviceFee">$0.00</strong></div>
+              <div class="saving-line"><span>Estimated savings vs solo delivery</span><strong id="estimatedSaving">$0.00</strong></div>
+            </div>
+            <button id="checkoutButton" class="primary-button full" type="button" disabled>Join Group</button>
           </div>
         </aside>
 
         <section class="content-area">
           <div class="section-heading" id="groups">
             <div>
-              <p class="eyebrow">Live group orders</p>
-              <h2>附近正在拼</h2>
+              <p class="eyebrow">Live places + group orders</p>
+              <h2>Live Group Orders Nearby</h2>
             </div>
-            <div class="segmented" aria-label="排序方式">
-              <button class="active" type="button">最快成团</button>
-              <button type="button">离我最近</button>
-              <button type="button">最低配送费</button>
+            <div class="segmented" aria-label="Sort options">
+              <button class="active" data-sort="fastest" type="button">Fastest</button>
+              <button data-sort="nearest" type="button">Nearest</button>
+              <button data-sort="cheapest" type="button">Lowest Fee</button>
             </div>
           </div>
 
           <div id="groupGrid" class="group-grid"></div>
+
+          <section class="pain-board" id="market">
+            <div class="section-heading compact-heading">
+              <div>
+                <p class="eyebrow">Market pain points</p>
+                <h2>What This Solves</h2>
+              </div>
+              <span class="research-pill">US delivery market signals</span>
+            </div>
+            <div id="painGrid" class="pain-grid"></div>
+          </section>
+
+          <section class="ops-board" id="ops">
+            <div class="section-heading compact-heading">
+              <div>
+                <p class="eyebrow">Marketplace design</p>
+                <h2>How the Three-Sided Marketplace Works</h2>
+              </div>
+              <span class="research-pill">MVP operating model</span>
+            </div>
+            <div id="opsGrid" class="ops-grid"></div>
+          </section>
+
+          <section class="launch-board" id="launch">
+            <div class="section-heading compact-heading">
+              <div>
+                <p class="eyebrow">Launch plan</p>
+                <h2>How to Validate Next</h2>
+              </div>
+              <span class="research-pill">Pilot-ready checklist</span>
+            </div>
+            <div class="launch-layout">
+              <div id="launchGrid" class="launch-grid"></div>
+              <form id="pilotForm" class="pilot-form">
+                <div>
+                  <p class="eyebrow">Pilot intake</p>
+                  <h3>Collect the first pilot leads</h3>
+                </div>
+                <label class="form-field">
+                  <span>Role</span>
+                  <select id="pilotRole" required>
+                    <option value="Student / resident">Student / resident</option>
+                    <option value="Restaurant">Restaurant</option>
+                    <option value="Building / campus manager">Building / campus manager</option>
+                    <option value="Driver / delivery partner">Driver / delivery partner</option>
+                  </select>
+                </label>
+                <label class="form-field">
+                  <span>Name or organization</span>
+                  <input id="pilotName" type="text" placeholder="e.g. Brooklyn Heights Apt A" required />
+                </label>
+                <label class="form-field">
+                  <span>Pilot area</span>
+                  <input id="pilotLocation" type="text" value="Brooklyn, NY" required />
+                </label>
+                <label class="form-field">
+                  <span>Cohort</span>
+                  <select id="pilotCohort" required>
+                    <option value="weekday lunch">Weekday lunch</option>
+                    <option value="weekday dinner">Weekday dinner</option>
+                    <option value="late night">Late night</option>
+                  </select>
+                </label>
+                <button class="primary-button full" type="submit">Save Pilot Lead</button>
+                <div class="pilot-counter"><strong id="pilotCount">0</strong><span> local pilot leads</span></div>
+              </form>
+            </div>
+          </section>
 
           <div class="split-layout">
             <section class="menu-board" id="restaurants">
               <div class="section-heading compact-heading">
                 <div>
                   <p class="eyebrow">Featured menus</p>
-                  <h2>热门套餐</h2>
+                  <h2>Featured Combos</h2>
                 </div>
-                <button id="randomPick" class="ghost-button" type="button">帮我选</button>
+                <button id="randomPick" class="ghost-button" type="button">Pick for me</button>
               </div>
               <div id="menuList" class="menu-list"></div>
             </section>
@@ -119,29 +203,27 @@
             <section class="pickup-board" id="pickup">
               <div class="section-heading compact-heading">
                 <div>
-                  <p class="eyebrow">Pickup map</p>
-                  <h2>取餐点</h2>
+                  <p class="eyebrow">Google map</p>
+                  <h2>Restaurants and Pickup Hubs</h2>
+                </div>
+                <span id="mapStatus" class="map-status">Waiting for Google Maps key</span>
+              </div>
+              <div class="map-shell">
+                <div id="map" class="map-surface" aria-label="Google Map"></div>
+                <div id="mapFallback" class="map-fallback">
+                  <strong>Add a Google Maps API key to show the live map</strong>
+                  <span>Enable Maps JavaScript API, Places API, and Geocoding API, then restrict the key to local and production domains.</span>
+                  <ol>
+                    <li>Add the key in app-config.js</li>
+                    <li>Allow http://127.0.0.1:4173/* locally</li>
+                    <li>Allow only your production domain after launch</li>
+                  </ol>
                 </div>
               </div>
-              <div class="map-surface" aria-label="取餐点地图示意">
-                <span class="route-line"></span>
-                <button class="map-pin active" style="left: 62%; top: 38%" type="button" aria-label="Apt Lobby">A</button>
-                <button class="map-pin" style="left: 34%; top: 58%" type="button" aria-label="Library Gate">B</button>
-                <button class="map-pin" style="left: 76%; top: 70%" type="button" aria-label="Campus East">C</button>
-              </div>
-              <div class="pickup-list">
-                <div>
-                  <strong>Apt Lobby</strong>
-                  <span>0.2 mi · 6:40 PM</span>
-                </div>
-                <div>
-                  <strong>Library Gate</strong>
-                  <span>0.7 mi · 7:05 PM</span>
-                </div>
-                <div>
-                  <strong>Campus East</strong>
-                  <span>1.1 mi · 8:15 PM</span>
-                </div>
+              <div id="pickupList" class="pickup-list">
+                <div><strong>Apt Lobby</strong><span>0.2 mi · 6:40 PM</span></div>
+                <div><strong>Library Gate</strong><span>0.7 mi · 7:05 PM</span></div>
+                <div><strong>Campus East</strong><span>1.1 mi · 8:15 PM</span></div>
               </div>
             </section>
           </div>
@@ -150,23 +232,69 @@
             <div class="section-heading compact-heading">
               <div>
                 <p class="eyebrow">My orders</p>
-                <h2>订单进度</h2>
+                <h2>Order Progress</h2>
               </div>
+              <span id="orderStatusPill" class="research-pill">Demo order</span>
             </div>
-            <div class="order-steps">
-              <div class="step done"><span></span><strong>已参团</strong><small>6:02 PM</small></div>
-              <div class="step done"><span></span><strong>已成团</strong><small>6:12 PM</small></div>
-              <div class="step active"><span></span><strong>商家备餐</strong><small>预计 14 min</small></div>
-              <div class="step"><span></span><strong>配送中</strong><small>待更新</small></div>
-              <div class="step"><span></span><strong>可取餐</strong><small>待更新</small></div>
+            <div id="orderSummary" class="order-summary">
+              <strong>No new order yet</strong>
+              <span>Choose a combo and confirm the group order to see your local demo order here.</span>
+            </div>
+            <div id="orderSteps" class="order-steps">
+              <div class="step done"><span></span><strong>Joined</strong><small>6:02 PM</small></div>
+              <div class="step done"><span></span><strong>Grouped</strong><small>6:12 PM</small></div>
+              <div class="step active"><span></span><strong>Restaurant Prep</strong><small>ETA 14 min</small></div>
+              <div class="step"><span></span><strong>On the way</strong><small>Pending</small></div>
+              <div class="step"><span></span><strong>Ready for pickup</strong><small>Pending</small></div>
             </div>
           </section>
         </section>
       </section>
     </main>
 
+    <div id="floatingCheckout" class="floating-checkout" hidden>
+      <div>
+        <span id="floatingCount">0 items</span>
+        <strong id="floatingTotal">$0.00</strong>
+      </div>
+      <button id="floatingCheckoutButton" class="primary-button" type="button">Confirm Group</button>
+    </div>
+
+    <div id="checkoutDrawer" class="drawer" aria-hidden="true">
+      <div class="drawer-backdrop" data-close-checkout></div>
+      <section class="drawer-panel" aria-label="Confirm group order">
+        <div class="drawer-heading">
+          <div>
+            <p class="eyebrow">Checkout preview</p>
+            <h2>Confirm this group order</h2>
+          </div>
+          <button class="icon-button" type="button" data-close-checkout aria-label="Close">×</button>
+        </div>
+        <div id="checkoutItems" class="checkout-items"></div>
+        <label class="form-field light">
+          <span>Pickup hub</span>
+          <select id="checkoutPickup"></select>
+        </label>
+        <label class="form-field light">
+          <span>Contact</span>
+          <input id="checkoutContact" type="text" placeholder="Phone or email for pickup updates" />
+        </label>
+        <div class="fee-box drawer-fees" aria-label="Checkout fees">
+          <div><span>Food subtotal</span><strong id="drawerFoodSubtotal">$0.00</strong></div>
+          <div><span>Shared delivery</span><strong id="drawerSharedDelivery">$0.00</strong></div>
+          <div><span>Platform fee</span><strong id="drawerServiceFee">$0.00</strong></div>
+          <div class="saving-line"><span>Estimated savings</span><strong id="drawerSaving">$0.00</strong></div>
+          <div class="total-line"><span>Confirmed total</span><strong id="drawerTotal">$0.00</strong></div>
+        </div>
+        <div class="drawer-actions">
+          <button id="confirmOrderButton" class="primary-button full" type="button">Confirm Group Order</button>
+        </div>
+      </section>
+    </div>
+
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-    <script src="script.js"></script>
+    <script src="app-config.js?v=6"></script>
+    <script src="script.js?v=6"></script>
   </body>
 </html>
