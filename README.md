@@ -2,6 +2,8 @@
 
 A US-focused group food delivery prototype inspired by neighborhood batch ordering: shared delivery, fixed pickup hubs, opt-in restaurants, and transparent checkout.
 
+Live site: https://cocoyou123456789-sketch.github.io/delivery-/
+
 ## Preview
 
 Start a local static server:
